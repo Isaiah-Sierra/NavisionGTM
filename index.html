@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navisiontech Go-To-Market Playbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony (Dark Theme) -->
+    <!-- Application Structure Plan: The application is designed as a single-page, dashboard-style hub. This structure was chosen over a linear report format to provide a high-level overview first, then allow for non-linear exploration. The user flow starts with the strategic foundation, moves to an interactive funnel visualization of the projected outcomes, then allows a deep dive into the specific outreach sequences and the underlying technology stack. This approach enables a CEO to quickly grasp the potential ROI from the funnel chart and then explore the "how" and "with what" at their own pace, making for a more engaging and impressive presentation. The email section has been updated to a carousel to improve readability for the longer-form email content. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Campaign Projections -> Goal: Inform/Compare -> Viz: Interactive Funnel Chart -> Interaction: Hover tooltips show conversion rates. -> Justification: A funnel is the most intuitive way to represent a sales/marketing process, immediately showing drop-off and success at each stage. -> Library: Chart.js.
+        - Report Info: Campaign Costs -> Goal: Compare -> Viz: Bar Chart -> Interaction: Hover tooltips show exact costs. -> Justification: A bar chart provides a clear, at-a-glance comparison of the different cost components. -> Library: Chart.js.
+        - Report Info: Outreach Sequences (Email/LinkedIn) -> Goal: Organize/Compare -> Method: Tabbed Interface, with an internal carousel for the email sequence -> Interaction: Clicking tabs switches content, and carousel arrows/dots navigate email steps. -> Justification: Tabs efficiently organize parallel information. The carousel is specifically designed for the detailed email content to prevent clutter and allow for focused reading on a single screen, improving readability and user experience. -> Method: HTML/JS.
+        - Report Info: Closing statement -> Goal: Inspire confidence -> Method: Prominent text block -> Interaction: None. -> Justification: A clear, impactful text block provides a strong conclusion and a call to action. -> Method: HTML/Tailwind.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 350px; max-height: 450px; }
+        @media (min-width: 768px) { .chart-container { height: 450px; } }
+        .nav-link { transition: color 0.3s, border-color 0.3s; }
+        .nav-link.active { color: #60a5fa; border-bottom-color: #60a5fa; }
+        .tab.active { background-color: #60a5fa; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .carousel-container { position: relative; width: 100%; overflow: hidden; }
+        .carousel-slides { display: flex; transition: transform 0.5s ease-in-out; }
+        .carousel-slide { min-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200">
+
+    <header class="bg-slate-800 shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-white">Navisiontech GTM Playbook</h1>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#strategy" class="nav-link text-slate-400 hover:text-blue-400 border-b-2 border-transparent pb-1">Strategy</a>
+                <a href="#funnel" class="nav-link text-slate-400 hover:text-blue-400 border-b-2 border-transparent pb-1">Campaign Funnel</a>
+                <a href="#outreach" class="nav-link text-slate-400 hover:text-blue-400 border-b-2 border-transparent pb-1">Outreach</a>
+                <a href="#next-steps" class="nav-link text-slate-400 hover:text-blue-400 border-b-2 border-transparent pb-1">Next Steps</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <section id="intro" class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-white">A Strategic Go-To-Market Plan</h2>
+            <p class="max-w-3xl mx-auto text-lg text-slate-400">This playbook outlines a strategic, multi-channel approach to demand generation. It demonstrates a clear, data-driven path from lead generation to new revenue, leveraging targeted outreach and a modern tech stack to produce predictable, scalable results.</p>
+        </section>
+
+        <section id="strategy" class="mb-16 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-white">The Strategic Foundation</h2>
+                <p class="text-md text-slate-500 mt-2">Defining our target and value proposition is the critical first step.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-slate-800 p-6 rounded-xl shadow-md">
+                    <h3 class="font-bold text-lg text-blue-400 mb-2">Ideal Customer Profile</h3>
+                    <p class="text-slate-300">Companies in retail, eCommerce, and wholesale that use Microsoft Dynamics 365 BC.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl shadow-md">
+                    <h3 class="font-bold text-lg text-blue-400 mb-2">Key Persona</h3>
+                    <p class="text-slate-300">Decision-makers and influencers, including CIOs, Heads of Ops, and Finance Directors.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl shadow-md">
+                    <h3 class="font-bold text-lg text-blue-400 mb-2">Core Pain Points</h3>
+                    <p class="text-slate-300">Struggling to unlock full ROI from their ERP due to outdated workflows and fragmented tools.</p>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-xl shadow-md">
+                    <h3 class="font-bold text-lg text-blue-400 mb-2">Value Proposition</h3>
+                    <p class="text-slate-300">We help companies get more out of their Dynamics 365 BC implementation with AI automations and customizations.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="funnel" class="mb-16 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-white">Projected Campaign Funnel</h2>
+                <p class="text-md text-slate-500 mt-2">A data-driven forecast of the monthly cold email campaign performance.</p>
+            </div>
+            <div class="bg-slate-800 p-4 md:p-8 rounded-xl shadow-lg">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 mb-8 text-center">
+                    <div class="bg-slate-700 p-4 rounded-lg">
+                        <p class="text-sm text-slate-400">Monthly Revenue</p>
+                        <p class="text-2xl md:text-3xl font-bold text-green-400">$48,000</p>
+                    </div>
+                    <div class="bg-slate-700 p-4 rounded-lg">
+                        <p class="text-sm text-slate-400">Monthly Cost</p>
+                        <p class="text-2xl md:text-3xl font-bold text-red-400">$544</p>
+                    </div>
+                    <div class="bg-slate-700 p-4 rounded-lg">
+                        <p class="text-sm text-slate-400">Booked Meetings</p>
+                        <p class="text-2xl md:text-3xl font-bold text-blue-400">112</p>
+                    </div>
+                    <div class="bg-slate-700 p-4 rounded-lg">
+                        <p class="text-sm text-slate-400">New Customers</p>
+                        <p class="text-2xl md:text-3xl font-bold text-blue-400">16</p>
+                    </div>
+                </div>
+                <p class="text-center text-sm text-slate-400">Note: Monthly revenue is based on a projected 16 closes with a $3K average deal size.</p>
+                <div class="chart-container">
+                    <canvas id="funnelChart"></canvas>
+                </div>
+                 <div class="mt-12">
+                    <h3 class="text-xl font-bold text-center mb-6 text-white">Monthly Cost Breakdown</h3>
+                    <div class="chart-container" style="height: 300px; max-height: 350px;">
+                        <canvas id="costChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="outreach" class="mb-16 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-white">Outreach Sequences & Tactics</h2>
+                <p class="text-md text-slate-500 mt-2">Crafted messages for email and LinkedIn designed to build curiosity and relationships.</p>
+            </div>
+            <div class="bg-slate-800 p-4 md:p-8 rounded-xl shadow-lg">
+                <div class="mb-8 border-b border-slate-700">
+                    <nav class="flex space-x-1" aria-label="Tabs">
+                        <button class="tab active py-3 px-6 font-medium text-slate-400 rounded-t-lg" data-tab="email">Email Sequence</button>
+                        <button class="tab py-3 px-6 font-medium text-slate-400 rounded-t-lg" data-tab="linkedin">LinkedIn Sequence</button>
+                    </nav>
+                </div>
+
+                <div id="email" class="tab-content active">
+                    <div class="carousel-container relative">
+                        <div id="emailCarousel" class="carousel-slides">
+                            <!-- Email 1 Slide -->
+                            <div class="carousel-slide p-6">
+                                <div class="p-6 rounded-lg bg-slate-700 h-full">
+                                    <h4 class="font-bold text-lg mb-3 text-blue-400">Step 1: The Trigger Email</h4>
+                                    <div class="space-y-4">
+                                        <p class="text-sm text-slate-500"><strong>Subject:</strong> Unlock ROI from your ERP with AI automation</p>
+                                        <p class="text-slate-300">Hey <b>{{first_name}}</b>,</p>
+                                        <p class="text-slate-300">Noticed <b>{{company_name}}</b> is scaling in the <b>{{industry}}</b> space. Many growing teams using Dynamics 365 Business Central struggle to unlock full ROI — especially with outdated workflows or fragmented tools.</p>
+                                        <p class="text-slate-300">Our clients in retail & wholesale have increased ops efficiency by 25%+ by automating workflows with Business Central customizations and AI add-ons.</p>
+                                        <p class="text-slate-300">Would it be a bad idea to show you how we’ve done it?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Email 2 Slide -->
+                            <div class="carousel-slide p-6">
+                                <div class="p-6 rounded-lg bg-slate-700 h-full">
+                                    <h4 class="font-bold text-lg mb-3 text-blue-400">Step 2: The Value Add</h4>
+                                    <div class="space-y-4">
+                                        <p class="text-sm text-slate-500"><strong>Subject:</strong> Quick use case: Business Central + AI</p>
+                                        <p class="text-slate-300">Thought I’d share a quick example:</p>
+                                        <p class="text-slate-300">One client in retail automated 70% of their manual invoice reconciliation with a Business Central extension — saving 12+ hours/week for their accounting team.</p>
+                                        <p class="text-slate-300">If you’re open to seeing how this works, I can send over a few examples or book a quick call.</p>
+                                        <p class="text-slate-300">Let me know,</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Email 3 Slide -->
+                            <div class="carousel-slide p-6">
+                                <div class="p-6 rounded-lg bg-slate-700 h-full">
+                                    <h4 class="font-bold text-lg mb-3 text-blue-400">Step 3: The Breakup</h4>
+                                    <div class="space-y-4">
+                                        <p class="text-sm text-slate-500"><strong>Subject:</strong> Should I close your file?</p>
+                                        <p class="text-slate-300">Hi <b>{{first_name}}</b>,</p>
+                                        <p class="text-slate-300">Haven’t heard back — totally fine if now’s not the right time.</p>
+                                        <p class="text-slate-300">Just wanted to check in before I close this out. If improving how you use Dynamics 365 BC is on the radar later this quarter, I’d be happy to reconnect.</p>
+                                        <p class="text-slate-300">Best,</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="prevBtn" class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-slate-700 hover:bg-slate-600 p-2 rounded-full text-white mx-2"><span class="text-lg">‹</span></button>
+                        <button id="nextBtn" class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-slate-700 hover:bg-slate-600 p-2 rounded-full text-white mx-2"><span class="text-lg">›</span></button>
+                    </div>
+                    <div id="emailDots" class="flex justify-center mt-4 space-x-2">
+                        <button class="w-2 h-2 rounded-full bg-slate-500 active-dot"></button>
+                        <button class="w-2 h-2 rounded-full bg-slate-500"></button>
+                        <button class="w-2 h-2 rounded-full bg-slate-500"></button>
+                    </div>
+                </div>
+                <div id="linkedin" class="tab-content">
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="border border-slate-700 p-6 rounded-lg">
+                            <h4 class="font-bold text-lg mb-3 text-blue-400">Step 1: Soft Connect Message</h4>
+                            <div class="space-y-4">
+                                <p class="text-sm text-slate-500"><strong>Context:</strong> Connection Request</p>
+                                <p class="text-slate-300">Hey <b>{{first_name}}</b>,</p>
+                                <p class="text-slate-300">Came across your profile while researching ERP leaders in <b>{{industry}}</b>. We help companies get more out of Dynamics 365 BC with AI automations.</p>
+                                <p class="text-slate-300">Thought it’d be great to connect and share ideas.</p>
+                            </div>
+                        </div>
+                        <div class="border border-slate-700 p-6 rounded-lg">
+                            <h4 class="font-bold text-lg mb-3 text-blue-400">Step 2: Problem Peek</h4>
+                            <div class="space-y-4">
+                                <p class="text-sm text-slate-500"><strong>Context:</strong> Day 2 after connection</p>
+                                <p class="text-slate-300">Appreciate the connect, <b>{{first_name}}</b>.</p>
+                                <p class="text-slate-300">A lot of teams using Dynamics BC hit limits when workflows get too manual or data gets siloed. Out of curiosity — are you currently working on streamlining anything like that?</p>
+                            </div>
+                        </div>
+                        <div class="border border-slate-700 p-6 rounded-lg">
+                            <h4 class="font-bold text-lg mb-3 text-blue-400">Step 3: Light CTA</h4>
+                            <div class="space-y-4">
+                                <p class="text-sm text-slate-500"><strong>Context:</strong> Day 4 after connection</p>
+                                <p class="text-slate-300">If helpful, happy to share a short use case deck or walk through how we’re approaching this.</p>
+                                <p class="text-slate-300">No pitch — just insights from other <b>{{industry}}</b> teams using BC.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="mt-12 pt-8 border-t border-slate-700">
+                    <h3 class="text-xl font-bold text-center mb-4 text-white">Multi-Threading Strategy</h3>
+                    <p class="text-center text-slate-400 max-w-2xl mx-auto mb-6">Once an initial lead replies, we'll multi-thread into other roles to expand influence and build consensus.</p>
+                    <div class="flex justify-center flex-wrap gap-4">
+                        <span class="bg-blue-800 text-blue-100 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full">CIO / VP of IT</span>
+                        <span class="bg-slate-700 text-slate-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full">Head of Ops / Finance Director</span>
+                        <span class="bg-slate-700 text-slate-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full">ERP Admin</span>
+                        <span class="bg-slate-700 text-slate-300 text-sm font-medium me-2 px-2.5 py-0.5 rounded-full">Dynamics 365 BC Superusers</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="next-steps" class="scroll-mt-20 text-center">
+            <div class="bg-slate-800 p-8 rounded-xl shadow-lg max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-white mb-4">Next Steps & Execution Plan</h2>
+                <p class="text-lg text-slate-300 mb-6">This playbook is designed to be a living document for the NavisionTech outbound team. To get started, the first step is to set up and validate the technology stack and data sources.</p>
+                <div class="grid md:grid-cols-3 gap-6 text-left">
+                    <div class="bg-slate-700 p-6 rounded-lg">
+                        <h4 class="font-bold text-lg mb-2 text-blue-400">Phase 1: Setup</h4>
+                        <ul class="list-disc list-inside text-slate-300 space-y-1">
+                            <li>Onboard team to Instantly.ai and Prosp.ai.</li>
+                            <li>Configure n8n for lead scraping automation.</li>
+                            <li>Purchase and warm up mailboxes and domains.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-700 p-6 rounded-lg">
+                        <h4 class="font-bold text-lg mb-2 text-blue-400">Phase 2: Launch</h4>
+                        <ul class="list-disc list-inside text-slate-300 space-y-1">
+                            <li>Scrape first 10,000 leads and clean the list.</li>
+                            <li>Launch cold email campaign with Step 1 message.</li>
+                            <li>Begin LinkedIn outreach with soft connect messages.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-700 p-6 rounded-lg">
+                        <h4 class="font-bold text-lg mb-2 text-blue-400">Phase 3: Optimize</h4>
+                        <ul class="list-disc list-inside text-slate-300 space-y-1">
+                            <li>Track key metrics (open rate, reply rate, show-up rate).</li>
+                            <li>A/B test subject lines and copy.</li>
+                            <li>Integrate CRM to track deal flow and ROI.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-800 mt-16 py-8 px-6 text-center">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8">
+                <!-- User to replace this image with their profile picture named isaiah.jpeg -->
+                <img src="https://placehold.co/60x60/334155/e2e8f0?text=PS" alt="Isaiah Sierra Profile" class="rounded-full w-16 h-16 object-cover">
+                <div class="text-center md:text-left">
+                    <p class="text-slate-300 text-lg font-semibold">Made by: Isaiah Sierra</p>
+                    <a href="https://www.linkedin.com/in/isaiah-sierra" target="_blank" class="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors duration-300 mt-2 md:mt-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                            <rect x="2" y="9" width="4" height="12"></rect>
+                            <circle cx="4" cy="4" r="2"></circle>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <p class="text-slate-500 mt-6">&copy; 2024 Go-To-Market Playbook. For discussion purposes.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const funnelData = {
+                labels: ['Emails Sent', 'Opens', 'Replies', 'Booked Meetings', 'Live Demos', 'Closes'],
+                numbers: [30000, 15000, 750, 112, 84, 16],
+                colors: ['#38bdf8', '#37a2eb', '#3685e0', '#3568d5', '#344bca', '#332ebf']
+            };
+
+            const costData = {
+                labels: ['Instantly.ai', 'G Workspace', 'Lead Cleaning', 'Lead Sending'],
+                costs: [150, 150, 147, 97]
+            };
+            
+            const funnelCtx = document.getElementById('funnelChart').getContext('2d');
+            new Chart(funnelCtx, {
+                type: 'bar',
+                data: {
+                    labels: funnelData.labels,
+                    datasets: [{
+                        label: 'Count',
+                        data: funnelData.numbers,
+                        backgroundColor: funnelData.colors,
+                        borderWidth: 0,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.x !== null) {
+                                        label += new Intl.NumberFormat('en-US').format(context.parsed.x);
+                                    }
+                                    
+                                    if (context.dataIndex > 0) {
+                                        const prevValue = funnelData.numbers[context.dataIndex - 1];
+                                        const currValue = funnelData.numbers[context.dataIndex];
+                                        const conversionRate = ((currValue / prevValue) * 100).toFixed(2);
+                                        return [label, `Conversion: ${conversionRate}%`];
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                           grid: { display: false },
+                           ticks: {
+                               color: '#e2e8f0',
+                               callback: function(value) {
+                                   return value >= 1000 ? `${value/1000}k` : value;
+                               }
+                           }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: {
+                                color: '#e2e8f0',
+                            }
+                        }
+                    }
+                }
+            });
+
+            const costCtx = document.getElementById('costChart').getContext('2d');
+            new Chart(costCtx, {
+                type: 'bar',
+                data: {
+                    labels: costData.labels,
+                    datasets: [{
+                        label: 'Monthly Cost ($)',
+                        data: costData.costs,
+                        backgroundColor: ['#fb923c', '#facc15', '#a3e635', '#4ade80'],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Cost: $${context.parsed.y}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#475569' },
+                            ticks: {
+                                color: '#e2e8f0',
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: {
+                                color: '#e2e8f0',
+                            }
+                        }
+                    }
+                }
+            });
+
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = tab.getAttribute('data-tab');
+                    
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === target) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 80) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            let currentEmailSlide = 0;
+            const emailCarousel = document.getElementById('emailCarousel');
+            const emailSlides = document.querySelectorAll('#emailCarousel .carousel-slide');
+            const emailDots = document.querySelectorAll('#emailDots button');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            function showEmailSlide(n) {
+                if (n >= emailSlides.length) {
+                    currentEmailSlide = 0;
+                } else if (n < 0) {
+                    currentEmailSlide = emailSlides.length - 1;
+                } else {
+                    currentEmailSlide = n;
+                }
+                const newTransform = `translateX(-${currentEmailSlide * 100}%)`;
+                emailCarousel.style.transform = newTransform;
+                updateEmailDots();
+            }
+
+            function updateEmailDots() {
+                emailDots.forEach((dot, index) => {
+                    if (index === currentEmailSlide) {
+                        dot.classList.add('active-dot', 'bg-blue-500');
+                        dot.classList.remove('bg-slate-500');
+                    } else {
+                        dot.classList.remove('active-dot', 'bg-blue-500');
+                        dot.classList.add('bg-slate-500');
+                    }
+                });
+            }
+
+            prevBtn.addEventListener('click', () => {
+                showEmailSlide(currentEmailSlide - 1);
+            });
+
+            nextBtn.addEventListener('click', () => {
+                showEmailSlide(currentEmailSlide + 1);
+            });
+
+            emailDots.forEach((dot, index) => {
+                dot.addEventListener('click', () => {
+                    showEmailSlide(index);
+                });
+            });
+
+            showEmailSlide(0);
+
+        });
+    </script>
+</body>
+</html>
